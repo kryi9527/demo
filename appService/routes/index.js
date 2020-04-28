@@ -47,12 +47,25 @@ router.post('/login', (req, res) => {
  */
 router.get('/getUserList', (req, res) => {
   let name = req.query.name;
+  let pageindex = Number(req.query.pageindex); //把接收到的字符串转换为number
+  let pagesize = Number(req.query.pagesize); //把接收到的字符串转换为number
+  let count = 0;
   let sql;
   if (name) {
-    sql = `select * from user where name = '${name}' order by name`;
+    sql = `select * from user where name like '%${name}%' order by age limit ${(pageindex-1) * pagesize},${pagesize}`;
   } else {
-    sql = `select * from user order by name`
+    sql = `select * from user order by age limit ${(pageindex - 1) * pagesize},${pagesize}`
   }
+  let countSql = 'select count(*) as count from user'
+  // 获取数据总数
+  db.query(countSql, (error, result) => {
+    if (error) {
+      console.log(error);
+      return;
+    } else {
+      count = result[0].count
+    }
+  })
   db.query(sql, (error, result) => {
     if (error) {
       console.log(error);
@@ -61,7 +74,12 @@ router.get('/getUserList', (req, res) => {
       res.json({
         status: "success",
         statusCode: "0000",
-        data: result
+        data: {
+          pageindex: pageindex,
+          pagesize: pagesize,
+          count: count,
+          data: result
+        }
       })
     }
   })

@@ -2,7 +2,7 @@
   <div>
     <div class="top-cont">
       <el-input
-        v-model="userName"
+        v-model="defaultData.userName"
         clearable
         @clear="handleClear()"
         style="width:200px;margin-right:10px"
@@ -13,7 +13,8 @@
       <el-button size="small" @click="handleAdd">新增</el-button>
     </div>
     <div class="table-cont">
-      <el-table :data="userList" style="width: 100%" border v-loading="loading">
+      <el-table :data="userList" style="width: 100%" border v-loading="loading" 
+      >
         <!-- <el-table-column prop="id" label="ID" width="180" align="center"> -->
         </el-table-column>
         <el-table-column prop="name" label="姓名" width="180" align="center">
@@ -41,6 +42,14 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        background
+        layout="total,prev, pager, next"
+         @current-change="handleCurrentChange"
+        :current-page.sync="defaultData.pageIndex"
+        :page-size="defaultData.pageSize"
+        :total="total">
+      </el-pagination>
     </div>
     <div class="model-cont">
       <el-dialog :visible.sync="addModel">
@@ -90,7 +99,6 @@ export default {
   data() {
     return {
       userList: [], // 渲染数据表
-      userName: "", // 按名字查询的字段
       addModel: false, // 弹框
       form: {
         // 弹框的表单数据
@@ -99,16 +107,37 @@ export default {
         account: "", // 账号
         password: "" // 密码
       },
-      loading: true // 加载动画
+      loading: true, // 加载动画
+      total:0, // 获取到的表格数据的总数
+      defaultData:{
+        userName:"", // 按用户名搜索
+        pageindex:1, // 当前页
+        pagesize:8 // 每页显示数据的数量
+      },
+
     };
   },
   methods: {
+ 
+    // 分页
+    handleCurrentChange(val){
+      this.defaultData.pageindex = val;
+      this.getData()
+    },
     // 获取数据
     getData() {
-      this.$axios
-        .get(`/test/getUserList?name=${this.userName}`)
+        this.$axios({
+          method:"get",
+          url:"/test/getUserList",
+          params:{
+            name:this.defaultData.userName,
+            pageindex:this.defaultData.pageindex,
+            pagesize:this.defaultData.pagesize
+          }
+        })
         .then(res => {
-          this.userList = res.data.data;
+          this.userList = res.data.data.data;
+          this.total = res.data.data.count
           this.loading = false;
         })
         .catch(error => {
@@ -214,4 +243,8 @@ export default {
   display: flex;
   margin-bottom: 20px;
 }
+.el-pagination{
+  margin-top: 20px;
+}
+       
 </style>
