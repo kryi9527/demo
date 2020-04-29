@@ -13,7 +13,7 @@
       <el-button size="small" @click="handleAdd">新增</el-button>
     </div>
     <div class="table-cont">
-      <el-table :data="userList" style="width: 100%" border v-loading="loading" 
+      <el-table :data="userList" style="width: 100%" border v-loading="loading" :height="tableHeigth"
       >
         <!-- <el-table-column prop="id" label="ID" width="180" align="center"> -->
         </el-table-column>
@@ -114,7 +114,7 @@ export default {
         pageindex:1, // 当前页
         pagesize:8 // 每页显示数据的数量
       },
-
+      tableHeigth:window.innerHeight * 0.8 - 100
     };
   },
   methods: {
