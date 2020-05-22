@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import{getUserList,addUser,updateUser,delUser} from '@/api/user'
 export default {
   name: "yearPlan",
   data() {
@@ -107,7 +108,7 @@ export default {
         account: "", // 账号
         password: "" // 密码
       },
-      loading: true, // 加载动画
+      loading: false, // 加载动画
       total:0, // 获取到的表格数据的总数
       defaultData:{
         userName:"", // 按用户名搜索
@@ -126,15 +127,13 @@ export default {
     },
     // 获取数据
     getData() {
-        this.$axios({
-          method:"get",
-          url:"/test/getUserList",
-          params:{
-            name:this.defaultData.userName,
-            pageindex:this.defaultData.pageindex,
-            pagesize:this.defaultData.pagesize
-          }
-        })
+      let data = {
+        name:this.defaultData.userName,
+        pageindex:this.defaultData.pageindex,
+        pagesize:this.defaultData.pagesize
+      }
+      
+        getUserList(data)
         .then(res => {
           this.userList = res.data.data.data;
           this.total = res.data.data.count
@@ -156,13 +155,10 @@ export default {
         type: "warning"
       })
         .then(() => {
-          this.$axios({
-            method: "post",
-            url: "/test/delUser",
-            data: {
-              id: row.id
-            }
-          })
+          let data = {
+            id: row.id
+          }
+         delUser(data)
             .then(res => {
               this.$message.success("删除成功");
               this.getData();
@@ -181,11 +177,7 @@ export default {
     // 新增表单的提交
     handleSubmit() {
       if (this.form.id) {
-        this.$axios({
-          method: "post",
-          url: "/test/updateUser",
-          data: this.form
-        })
+        updateUser(this.form)
           .then(res => {
             if (res.data.status == "success" && res.data.statusCode == "0000") {
               this.$message.success("编辑成功");
@@ -199,11 +191,7 @@ export default {
             console.log(error);
           });
       } else {
-        this.$axios({
-          method: "post",
-          url: "/test/addUser",
-          data: this.form
-        })
+       addUser(this.form)
           .then(res => {
             if (res.data.status == "success" && res.data.statusCode == "0000") {
               this.$message.success("添加成功");

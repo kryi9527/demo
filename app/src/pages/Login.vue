@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import { login } from "@/api/login";
 export default {
   data() {
     return {
@@ -36,14 +37,11 @@ export default {
     handleSubmit() {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.$axios({
-            method: "post",
-            url: "/test/login",
-            data: {
-              loginname: this.userInfo.account,
-              password: this.userInfo.password
-            }
-          })
+          let data = {
+            loginname: this.userInfo.account,
+            password: this.userInfo.password
+          };
+          login(data)
             .then(res => {
               if (res.status == 200) {
                 if (res.data.statusCode == "1111") {
