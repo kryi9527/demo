@@ -1,9 +1,23 @@
 <template>
   <div>
-    <ve-histogram :data="chartData" :extend="chartExtend" :colors="colors">
+    <ve-histogram
+      :data="chartData"
+      :extend="chartExtend"
+      :colors="colors"
+      ref="demo"
+      v-if="show"
+    >
     </ve-histogram>
-    <ve-histogram :data="chartData1" :extend="chartExtend" :colors="colors">
+
+    <ve-histogram
+      v-if="!show"
+      :data="chartData1"
+      :extend="chartExtend"
+      ref="demo"
+      :colors="colors"
+    >
     </ve-histogram>
+    <el-button @click="handleClick">改变</el-button>
   </div>
 </template>
 
@@ -29,22 +43,6 @@ export default {
         return v;
       }
     };
-    /* 等同于
-        this.chartExtend = {
-          series: {
-            barWidth: 10
-          },
-          tooltip: {
-            trigger: 'none'
-          }
-        }
-        等同于
-        this.chartExtend = {
-          'series.0.barWidth': 10,
-          'series.1.barWidth': 10,
-          'tooltip.trigger': 'none'
-        }
-      */
     return {
       chartData: {
         columns: ["类型", "带电作业", "停电作业"],
@@ -64,10 +62,21 @@ export default {
           { 地区: "配电", 人数: 34 }
         ]
       },
-      flag: false
+      flag: false,
+      show: true
     };
   },
-  methods: {}
+  methods: {
+    handleClick() {
+      this.show = !this.show;
+      console.log(this.show);
+      if (this.show) {
+        this.$refs.demo.width = "600px";
+      } else {
+        this.$refs.demo.width = "800px";
+      }
+    }
+  }
 };
 </script>
 <style lang="less" scoped></style>

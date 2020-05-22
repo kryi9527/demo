@@ -57,11 +57,7 @@ export default {
           duration: 1000
         });
       } else if (command == "b") {
-        this.$message({
-          type: "success",
-          message: "个人信息",
-          duration: 1000
-        });
+        this.$router.push("/");
       }
     }
   }

@@ -24,7 +24,7 @@ router.post('/login', (req, res) => {
         console.log("用户名或密码输入错误");
         res.json({
           status: "success",
-          statusCode: "0000",
+          statusCode: "1111",
           message: "用户名或密码输入错误",
           data: null
         })
@@ -56,7 +56,7 @@ router.get('/getUserList', (req, res) => {
   } else {
     sql = `select * from user order by age limit ${(pageindex - 1) * pagesize},${pagesize}`
   }
-  let countSql = 'select count(*) as count from user'
+  let countSql = `select count(*) as count from user where name like '%${name}%' `
   // 获取数据总数
   db.query(countSql, (error, result) => {
     if (error) {
@@ -161,6 +161,5 @@ router.post('/updateUser', (req, res) => {
     }
   })
 })
-
 
 module.exports = router;

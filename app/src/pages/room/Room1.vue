@@ -112,7 +112,7 @@ export default {
       defaultData:{
         userName:"", // 按用户名搜索
         pageindex:1, // 当前页
-        pagesize:8 // 每页显示数据的数量
+        pagesize:10 // 每页显示数据的数量
       },
       tableHeigth:window.innerHeight * 0.8 - 100
     };
